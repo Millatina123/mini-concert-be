@@ -25,6 +25,7 @@ model Concert {
   start_hours          DateTime
   price                Int
   description          String
+  link_yt              String
   payments             Payment[]
 }
 
