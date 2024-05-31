@@ -21,11 +21,11 @@ model Concert {
   id                   Int       @id @default(autoincrement())
   name                 String
   logo                 String
-  start_date           DateTime
-  start_hours          DateTime
+  start_date           String
+  start_hours          String
   price                Int
   description          String
-  link_yt              String
+  link_yt              String?
   payments             Payment[]
 }
 
@@ -33,8 +33,11 @@ model Payment {
   id          Int       @id @default(autoincrement())
   userId      Int
   concertId   Int
+  transacation_code    String
   evidence    String
+  createdAt   DateTime  @default(now())
   verified    Boolean   @default(false)
+  verifiedAt   DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id])
   concert     Concert   @relation(fields: [concertId], references: [id])
 }
