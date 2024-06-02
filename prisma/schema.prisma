@@ -26,6 +26,7 @@ model Concert {
   price                Int
   description          String
   link_yt              String?
+  is_start             Boolean @default(false)
   payments             Payment[]
 }
 
@@ -33,7 +34,7 @@ model Payment {
   id          Int       @id @default(autoincrement())
   userId      Int
   concertId   Int
-  transacation_code    String
+  transaction_code    String
   evidence    String
   createdAt   DateTime  @default(now())
   verified    Boolean   @default(false)

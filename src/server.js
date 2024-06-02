@@ -6,6 +6,7 @@ const path = require("path");
 // const paymentRoutes = require("./routes/paymentRoutes");
 const concertRoutes = require("./routes/concertRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const settingConcertRoutes = require("./routes/settingConcertRoutes");
 const errorHandler = require("./utils/errorHandler");
 
 const app = express();
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 // app.use("/api/payments", paymentRoutes);
 app.use("/api/concerts", concertRoutes);
 app.use("/api/user/payment", paymentRoutes);
+app.use("/api/setting-concerts", settingConcertRoutes);
 
 app.use(errorHandler);
 

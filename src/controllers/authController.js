@@ -36,7 +36,8 @@ const register = async (req, res, next) => {
     });
 
     const token = jwt.sign({ userId: findUser.id, role: findUser.role }, SECRET_KEY);
-    return response(200, { token, findUser }, "Berhasil Mendaftar", res);
+
+    return response(200, { token, user: findUser }, "Berhasil Mendaftar", res);
   } catch (error) {
     return response(403, error, "Something went wrong", res);
   }
