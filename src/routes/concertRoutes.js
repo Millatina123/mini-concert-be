@@ -1,5 +1,5 @@
 const express = require("express");
-const { listConcerts, createConcert, listPayments } = require("../controllers/concertController");
+const { listConcerts, createConcert, listPayments, getConcertByCode } = require("../controllers/concertController");
 const authenticate = require("../middlewares/authenticate");
 const router = express.Router();
 const multer = require("multer");
@@ -8,6 +8,7 @@ const prisma = require("../prismaClient");
 
 router.get("/", authenticate, listConcerts);
 router.post("/", authenticate, createConcert);
+router.get("/:code", authenticate, getConcertByCode);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

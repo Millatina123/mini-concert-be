@@ -19,13 +19,14 @@ model User {
 
 model Concert {
   id                   Int       @id @default(autoincrement())
+  code                 String
   name                 String
   logo                 String
   start_date           String
   start_hours          String
   price                Int
-  description          String
-  link_yt              String?
+  description          String    @db.Text
+  link_yt              String?   @db.Text
   is_start             Boolean @default(false)
   payments             Payment[]
 }
