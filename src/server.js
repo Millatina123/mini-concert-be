@@ -7,7 +7,9 @@ const path = require("path");
 const concertRoutes = require("./routes/concertRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const settingConcertRoutes = require("./routes/settingConcertRoutes");
+const historyConcertCustomerRoutes = require("./routes/historyConcertCustomerRoutes");
 const errorHandler = require("./utils/errorHandler");
+const historyConcertAdminRoutes = require("./routes/historyConcertAdminRoutes");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -27,7 +29,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/concerts", concertRoutes);
 app.use("/api/user/payment", paymentRoutes);
 app.use("/api/setting-concerts", settingConcertRoutes);
-
+app.use("/api/history-concert-customers", historyConcertCustomerRoutes);
+app.use("/api/history-concert-admin", historyConcertAdminRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

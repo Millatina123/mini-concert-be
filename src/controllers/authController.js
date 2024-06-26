@@ -78,4 +78,60 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-module.exports = { register, login, verifyToken };
+const updateUser = async (req, res, next) => {
+  const { email, name, phone_number, id } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return response(404, null, "User not found", res);
+    }
+
+    const updatedData = {
+      email,
+      name,
+      phone_number: phone_number?.toString(),
+    };
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updatedData,
+    });
+
+    return response(200, { user: updatedUser }, "Profile updated successfully", res);
+  } catch (error) {
+    return response(500, error, "Something went wrong", res);
+  }
+};
+
+const updatePasswword = async (req, res, next) => {
+  const { password, id } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return response(404, null, "User not found", res);
+    }
+
+    const updatedData = {
+      password: await bcrypt.hash(password, 10),
+    };
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updatedData,
+    });
+
+    return response(200, { user: updatedUser }, "Password updated successfully", res);
+  } catch (error) {
+    return response(500, error, "Something went wrong", res);
+  }
+};
+
+module.exports = { register, login, verifyToken, updateUser, updatePasswword };
