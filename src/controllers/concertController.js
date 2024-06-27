@@ -45,7 +45,7 @@ const getConcertByCode = async (req, res, next) => {
   try {
     const concert = await prisma.concert.findFirst({
       where: {
-        id : parseInt(code),
+        code,
       },
     });
     return response(200, concert, "Berhasil Mengambil Data", res);
