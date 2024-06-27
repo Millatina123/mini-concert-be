@@ -30,6 +30,7 @@ const createConcert = async (req, res, next) => {
         price,
         start_date,
         code,
+        is_start: 0,
       },
     });
     return response(200, concert, "Berhasil Menambah Data", res);
@@ -54,5 +55,3 @@ const getConcertByCode = async (req, res, next) => {
 };
 
 module.exports = { listConcerts, createConcert, getConcertByCode };
-
-

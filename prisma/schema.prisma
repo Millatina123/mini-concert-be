@@ -27,7 +27,7 @@ model Concert {
   price                Int
   description          String    @db.Text
   link_yt              String?   @db.Text
-  is_start             Boolean @default(false)
+  is_start             Int
   payments             Payment[]
 }
 
@@ -37,9 +37,11 @@ model Payment {
   concertId   Int
   transaction_code    String
   evidence    String
+  review      String?
+  rating      Int?
   createdAt   DateTime  @default(now())
   verified    Boolean   @default(false)
-  verifiedAt   DateTime  @default(now())
+  verifiedAt  DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id])
   concert     Concert   @relation(fields: [concertId], references: [id])
 }

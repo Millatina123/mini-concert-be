@@ -9,6 +9,11 @@ const listConcerts = async (req, res, next) => {
   console.log(req.user.userId);
   try {
     const concerts = await prisma.concert.findMany({
+      where: {
+        is_start: {
+          equals: 0,
+        },
+      },
       include: {
         payments: {
           where: {
@@ -26,15 +31,7 @@ const listConcerts = async (req, res, next) => {
       };
     });
 
-    const futureConcerts = concertsWithPaymentFlag.filter((concert) => {
-      // Combine start_date and start_hours into a single datetime string
-      const concertDateTime = moment(`${concert.start_date} ${concert.start_hours}`, "DD-MM-YYYY HH:mm:ss");
-
-      // Check if the concert starts in the future
-      return concertDateTime.isAfter(now);
-    });
-
-    return response(200, futureConcerts, "Berhasil Mengambil Data", res);
+    return response(200, concertsWithPaymentFlag, "Berhasil Mengambil Data", res);
   } catch (error) {
     let statusCode = 500;
     let message = "Something went wrong";
@@ -124,6 +121,48 @@ const listVerifyPayment = async (req, res, next) => {
   }
 };
 
+const historyPayment = async (req, res, next) => {
+  try {
+    const payments = await prisma.payment.findMany({
+      where: {
+        verified: true,
+      },
+      include: {
+        user: true,
+        concert: true,
+      },
+    });
+
+    return response(200, payments, "Berhasil Mengambil Data", res);
+  } catch (error) {
+    let statusCode = 500;
+    let message = "Something went wrong";
+    console.log(error);
+    if (error.code) {
+      switch (error.code) {
+        case "P2002":
+          statusCode = 409;
+          message = "Duplicate entry error";
+          break;
+        case "P2025":
+          statusCode = 404;
+          message = "Record not found";
+          break;
+        case "P2003":
+          statusCode = 400;
+          message = "Foreign key constraint failed";
+          break;
+        // Add more cases as needed
+        default:
+          statusCode = 500;
+          message = "Database error";
+      }
+    }
+
+    return response(statusCode, error, message, res);
+  }
+};
+
 const updatePaymentStatus = async (req, res, next) => {
   const { paymentId } = req.params;
 
@@ -149,6 +188,9 @@ const listTicketCustomer = async (req, res, next) => {
   try {
     const concerts = await prisma.concert.findMany({
       where: {
+        is_start: {
+          not: 2,
+        },
         payments: {
           some: {
             userId: req.user.userId,
@@ -156,6 +198,7 @@ const listTicketCustomer = async (req, res, next) => {
           },
         },
       },
+
       include: {
         payments: {
           where: {
@@ -174,15 +217,7 @@ const listTicketCustomer = async (req, res, next) => {
       };
     });
 
-    const futureConcerts = concertsWithPaymentFlag.filter((concert) => {
-      // Combine start_date and start_hours into a single datetime string
-      const concertDateTime = moment(`${concert.start_date} ${concert.start_hours}`, "DD-MM-YYYY HH:mm:ss");
-
-      // Check if the concert starts in the future
-      return concertDateTime.isAfter(now);
-    });
-
-    return response(200, futureConcerts, "Berhasil Mengambil Data", res);
+    return response(200, concertsWithPaymentFlag, "Berhasil Mengambil Data", res);
   } catch (error) {
     let statusCode = 500;
     let message = "Something went wrong";
@@ -219,4 +254,4 @@ const convertToDDMMYYYY = (dateString) => {
 const extractTimeFromDateTime = (dateTimeString) => {
   return moment.utc(dateTimeString, "YYYY-MM-DD HH:mm:ss.SSS").format("HH:mm:ss");
 };
-module.exports = { listConcerts, createPayment, listVerifyPayment, updatePaymentStatus, listTicketCustomer };
+module.exports = { listConcerts, createPayment, listVerifyPayment, updatePaymentStatus, listTicketCustomer, historyPayment };
